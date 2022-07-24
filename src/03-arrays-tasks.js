@@ -523,8 +523,17 @@ function distinct(arr) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  const keysArray = array.map((element) => keySelector(element));
+  const uniqKeysArray = Array.from(new Set(keysArray));
+  const result = uniqKeysArray.map((element) => {
+    const onlyThisKey = array.filter((oldEl) => keySelector(oldEl) === element);
+    const res = onlyThisKey.map((thisEl) => valueSelector(thisEl));
+    const returner = [element];
+    returner.push(res);
+    return returner;
+  });
+  return result;
 }
 
 
@@ -541,8 +550,8 @@ function group(/* array, keySelector, valueSelector */) {
  *   [[1, 2], [3, 4], [5, 6]], (x) => x     =>   [ 1, 2, 3, 4, 5, 6 ]
  *   ['one','two','three'], x=>x.split('')  =>   ['o','n','e','t','w','o','t','h','r','e','e']
  */
-function selectMany(/* arr, childrenSelector */) {
-  throw new Error('Not implemented');
+function selectMany(arr, childrenSelector) {
+  return arr.map(childrenSelector).flat();
 }
 
 
@@ -558,8 +567,9 @@ function selectMany(/* arr, childrenSelector */) {
  *   ['one','two','three'], [2]       => 'three'  (arr[2])
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
-function getElementByIndexes(/* arr, indexes */) {
-  throw new Error('Not implemented');
+function getElementByIndexes(arr, indexes) {
+  const findValue = arr.slice(indexes[0], indexes[0] + 1)[0];
+  return indexes.length === 1 ? findValue : getElementByIndexes(findValue, indexes.slice(1));
 }
 
 
@@ -581,8 +591,14 @@ function getElementByIndexes(/* arr, indexes */) {
  *   [ 1, 2, 3, 4, 5, 6, 7, 8 ]   =>  [ 5, 6, 7, 8, 1, 2, 3, 4 ]
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  const needCenter = arr.length % 2 === 1;
+  const centerIndex = Math.floor(arr.length / 2);
+  const head = arr.slice(0, centerIndex);
+  const tailIndex = needCenter ? centerIndex + 1 : centerIndex;
+  const tail = arr.slice(tailIndex);
+  const centerEl = needCenter ? arr.slice(centerIndex, centerIndex + 1) : [];
+  return tail.concat(centerEl, head);
 }
 
 
