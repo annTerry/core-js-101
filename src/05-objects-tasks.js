@@ -121,9 +121,9 @@ class CurrentBuilder {
   }
 
   stringify() {
-    const result = this.stack.join('');
+    const res = this.stack.join('');
     this.stack = [];
-    return result;
+    return res;
   }
 
   testUniq(value) {
