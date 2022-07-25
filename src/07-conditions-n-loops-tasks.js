@@ -120,8 +120,11 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  return !((rect1.top > rect2.top + rect2.height)
+          || (rect1.top + rect1.height < rect2.top)
+          || (rect1.left > rect2.left + rect2.width)
+          || (rect1.left + rect1.width < rect2.left));
 }
 
 
@@ -168,8 +171,23 @@ function isInsideCircle(circle, point) {
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  let tempStr = str;
+  for (let i = 0; i < str.length; i += 1) {
+    if (tempStr.length > 0) {
+      const char = tempStr.charAt(0);
+      tempStr = tempStr.substring(1);
+      if (tempStr.includes(char)) {
+        const regExp = new RegExp(char, 'gi');
+        tempStr = tempStr.replace(regExp, '');
+      } else {
+        return char;
+      }
+    } else {
+      break;
+    }
+  }
+  return null;
 }
 
 
@@ -258,8 +276,15 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const cardNumberArray = `${ccn}`.split('').reverse();
+  let result = 0;
+  cardNumberArray.forEach((element, index) => {
+    let number = +element;
+    if (index % 2 === 1) number *= 2;
+    result += number > 9 ? number - 9 : number;
+  });
+  return (result % 10) === 0;
 }
 
 /**
@@ -304,8 +329,22 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const brackets = '[({<';
+  const bracketPairs = {
+    ']': '[', ')': '(', '}': '{', '>': '<',
+  };
+  const stack = [];
+  for (let i = 0; i < str.length; i += 1) {
+    const char = str.charAt(i);
+    if (brackets.includes(char)) stack.push(char);
+    const currentPair = bracketPairs[char];
+    if (currentPair) {
+      if (stack.length === 0) return false;
+      if (currentPair !== stack.pop()) return false;
+    }
+  }
+  return stack.length === 0;
 }
 
 
@@ -346,8 +385,20 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let res = pathes[0].substring(0, pathes[0].lastIndexOf('/') + 1);
+  function findCommon(str1, str2) {
+    if (str1.length === 0) return '';
+    if (str2.startsWith(str1)) {
+      return str1;
+    }
+    let newTemplate = str1;
+    if (str1.endsWith('/')) newTemplate = str1.substring(0, str1.length - 1);
+    const slashIndex = newTemplate.lastIndexOf('/');
+    return slashIndex >= 0 ? findCommon(newTemplate.substring(0, slashIndex + 1), str2) : '';
+  }
+  pathes.forEach((element) => { res = findCommon(res, element); });
+  return res;
 }
 
 
@@ -369,8 +420,18 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const res = [];
+  for (let i = 0; i < m1.length; i += 1) {
+    res[i] = [];
+    for (let j = 0; j < m2[i].length; j += 1) {
+      m2.forEach((element, index) => {
+        if (res[i][j] === undefined) res[i][j] = 0;
+        res[i][j] += element[j] * m1[i][index];
+      });
+    }
+  }
+  return res;
 }
 
 
@@ -404,8 +465,19 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const testArray = [[[0, 0], [0, 1], [0, 2]], [[0, 0], [1, 1], [2, 2]], [[0, 0], [1, 0], [2, 0]],
+    [[0, 1], [1, 1], [2, 1]], [[0, 2], [1, 2], [2, 2]], [[0, 2], [1, 1], [2, 0]],
+    [[1, 0], [1, 1], [1, 2]], [[2, 0], [2, 1], [2, 2]]];
+  for (let i = 0; i < testArray.length; i += 1) {
+    let resStr = '';
+    for (let j = 0; j < testArray[i].length; j += 1) {
+      resStr += position[testArray[i][j][0]][testArray[i][j][1]];
+    }
+    if (resStr === 'XXX') return 'X';
+    if (resStr === '000') return '0';
+  }
+  return undefined;
 }
 
 
