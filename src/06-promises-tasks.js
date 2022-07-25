@@ -97,6 +97,9 @@ function getFastestPromise(array) {
  *
  */
 function chainPromises(/* array, action */) {
+/*   const applyAsync = (acc, val) => acc.then(action(val));
+  const composeAsync = array.reduce(x => applyAsync, Promise.resolve(x));
+  return composeAsync; */
   throw new Error('Not implemented');
 }
 
